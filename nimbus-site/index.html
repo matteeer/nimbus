@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <link rel="icon" type="image/png" href="images/nimbuslogo-nobg.png">
+  <meta charset="UTF-8" />
+  <title>Nimbus • Cloud automation for Discord</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Nimbus è un bot di automazione e moderazione per Discord, pensato per portare stabilità, controllo e un design professionale nei server." />
+  <style>
+    :root {
+      --bg: #05070b;
+      --bg-elevated: #0b0f17;
+      --primary: #5ab6f8;
+      --primary-soft: rgba(90, 182, 248, 0.12);
+      --text: #f5f7fb;
+      --text-soft: #a2aec4;
+      --border: #202633;
+      --accent: #8a9eff;
+      --danger: #ff6b81;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      background: radial-gradient(circle at top, #101629 0, #05070b 55%);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 16px 64px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 30% 0%, #ffffff 0, #5ab6f8 32%, #122033 70%, #05070b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .header-pill {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(14, 184, 120, 0.1);
+      color: #6be6b0;
+      border: 1px solid rgba(14, 184, 120, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 840px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    .hero-main h1 {
+      font-size: clamp(30px, 4vw, 38px);
+      line-height: 1.12;
+      margin-bottom: 12px;
+    }
+
+    .hero-main h1 span {
+      background: linear-gradient(90deg, #5ab6f8, #8a9eff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-soft);
+      font-size: 15px;
+      max-width: 480px;
+      margin-bottom: 18px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 12px;
+    }
+
+    .badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(90, 182, 248, 0.4);
+      background: rgba(6, 16, 31, 0.8);
+      color: var(--text-soft);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      background: none;
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #5ab6f8, #8a9eff);
+      box-shadow: 0 14px 30px rgba(6, 115, 209, 0.5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(6, 115, 209, 0.65);
+    }
+
+    .btn-ghost {
+      border-color: var(--border);
+      background: rgba(3, 8, 18, 0.85);
+      color: var(--text-soft);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .hero-note {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .hero-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at 0% 0%, rgba(90, 182, 248, 0.2) 0, rgba(5, 7, 11, 0.9) 38%, #05070b 100%);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hero-card-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+    }
+
+    .hero-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .hero-stat {
+      background: rgba(5, 9, 18, 0.9);
+      border-radius: 13px;
+      padding: 8px 10px;
+      border: 1px solid rgba(49, 60, 81, 0.9);
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 2px;
+    }
+
+    .hero-stat-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .hero-list {
+      font-size: 12px;
+      color: var(--text-soft);
+      list-style: none;
+      display: grid;
+      gap: 4px;
+    }
+
+    .hero-list li::before {
+      content: "• ";
+      color: var(--primary);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    section {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: rgba(6, 10, 20, 0.9);
+      padding: 18px 18px 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    section h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    section p {
+      font-size: 14px;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .features-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .feature-card {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #070a12;
+      padding: 12px 12px 11px;
+    }
+
+    .feature-title {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 880px) {
+      .why-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .why-card {
+      padding: 10px 11px;
+      border-radius: 12px;
+      background: #060910;
+      border: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .pill-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 880px) {
+      .who-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .who-card {
+      padding: 11px;
+      border-radius: 12px;
+      background: #070a12;
+      border: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .status-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(243, 200, 82, 0.08);
+      border: 1px solid rgba(243, 200, 82, 0.45);
+      color: #f7d28a;
+      width: fit-content;
+    }
+
+    .links-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .link-pill {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #05070b;
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .link-pill span.icon {
+      font-size: 14px;
+    }
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+    footer {
+      margin-top: 26px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-soft);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">
+  <img src="images/nimbus-logo.png" alt="Nimbus Logo" class="logo-img">
+</div>
+        <div class="brand-text">
+          <div class="brand-title">Nimbus</div>
+          <div class="brand-sub">Cloud automation for Discord</div>
+        </div>
+      </div>
+      <div class="header-pill">
+        <span>🟢</span> <span>Stable release</span>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-main">
+        <h1>
+          Automazione e moderazione<br />
+          <span>all-in-one.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Nimbus è un bot di automazione e moderazione per Discord, progettato per portare stabilità, controllo e un design professionale nella gestione delle community.
+        </p>
+
+        <div class="hero-badges">
+          <div class="badge">🛡️ Moderazione avanzata</div>
+          <div class="badge">🎫 Ticket system integrato</div>
+          <div class="badge">👋 Welcome personalizzabile</div>
+          <div class="badge">⚙️ Configurazione tramite pannelli</div>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://discord.com/oauth2/authorize?client_id=1434207650513420338&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" rel="noopener">
+            <span>Invita Nimbus</span> <span>→</span>
+          </a>
+          <a class="btn btn-ghost" href="https://discord.gg/SKg96wJA9b" target="_blank" rel="noopener">
+            <span>Server di supporto</span>
+          </a>
+        </div>
+
+        <div class="hero-note">
+          Nessun comando inutile. Nessun casino grafico. Solo strumenti stabili e curati per chi gestisce community.
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-title">Panoramica rapida</div>
+        <div class="hero-stat-grid">
+          <div class="hero-stat">
+            <div class="hero-stat-label">Stato</div>
+            <div class="hero-stat-value">🟢 Online</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-label">Versione bot</div>
+            <div class="hero-stat-value">v1.0.0</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-label">Linguaggio</div>
+            <div class="hero-stat-value">Node.js</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-label">Libreria</div>
+            <div class="hero-stat-value">discord.js v14</div>
+          </div>
+        </div>
+        <ul class="hero-list">
+          <li>Automoderazione per spam, raid, scam e flood.</li>
+          <li>Messaggi di benvenuto con embed, immagini e auto-ruoli.</li>
+          <li>Ticket system con pannello dedicato per il supporto.</li>
+          <li>Comandi moderazione chiari e risposte sempre in embed.</li>
+        </ul>
+      </div>
+    </section>
+
+    <main>
+      <section>
+        <h2>Cosa è Nimbus</h2>
+        <p>
+          Nimbus nasce dall’idea di portare nel mondo Discord un bot che unisca <strong>funzionalità solide</strong>,
+          <strong>attenzione al dettaglio</strong> e una <strong>user experience curata</strong>.
+          Non punta a fare “di tutto”, ma a fare bene ciò che serve davvero a chi gestisce un server.
+        </p>
+        <p>
+          Ogni funzione è progettata per essere minimale, leggibile e veloce da configurare, senza pannelli confusi o
+          centinaia di comandi ridondanti.
+        </p>
+      </section>
+
+      <section>
+        <h2>Funzionalità principali</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-title">🛡️ Automoderazione</div>
+            <div class="feature-desc">
+              Filtri contro spam, flood, scam e attacchi raid. Regole configurabili per server diversi,
+              con log chiari per lo staff.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">👋 Welcome system</div>
+            <div class="feature-desc">
+              Messaggi di benvenuto personalizzabili, embed, immagini, placeholder dinamici e assegnazione automatica
+              dei ruoli all’ingresso.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">🎫 Ticket integrati</div>
+            <div class="feature-desc">
+              Apertura e gestione dei ticket direttamente dal server, con pannello dedicato e canali chiari per supporto,
+              segnalazioni e richieste.
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-title">⚙️ Strumenti per lo staff</div>
+            <div class="feature-desc">
+              Comandi di moderazione in embed, help ordinato, info bot/server, e una base pensata per estendersi con nuove
+              funzioni in modo coerente.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Perché scegliere Nimbus</h2>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="pill-label">Design & UX</div>
+            Interfaccia coerente, embed curati, risposta sempre chiara. Tutto pensato per dare l’idea di un progetto
+            professionale, non di un bot improvvisato.
+          </div>
+          <div class="why-card">
+            <div class="pill-label">Focus sulla qualità</div>
+            Niente funzioni riempitive: solo ciò che ha senso per moderazione, automazione e gestione.
+            Meno caos, più controllo.
+          </div>
+          <div class="why-card">
+            <div class="pill-label">Evoluzione continua</div>
+            Nimbus è in sviluppo attivo: feedback reali, test, fix e nuove feature vengono integrati in modo graduale,
+            senza rompere l’esperienza degli utenti.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Per chi è pensato</h2>
+        <div class="who-grid">
+          <div class="who-card">
+            <strong>Admin di server</strong><br />
+            Per chi vuole una moderazione stabile, regole chiare e un bot che non faccia scena solo nei comandi,
+            ma nell’affidabilità.
+          </div>
+          <div class="who-card">
+            <strong>Moderatori</strong><br />
+            Strumenti rapidi, risposte leggibili, log ordinati. Meno tempo perso, più focus sulla community.
+          </div>
+          <div class="who-card">
+            <strong>Community che vogliono ordine</strong><br />
+            Server tematici, progetti, team, studi, community tecniche: dovunque serva struttura e professionalità.
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Stato del progetto</h2>
+        <div class="status-box">
+          <div class="status-badge">
+            <span>🟢</span> <span>Nimbus è ora nella sua versione stabile ufficiale.</span>
+          </div>
+          <p>
+            Le funzioni principali — moderazione, ticket, welcome e automazione — sono completamente operative e ottimizzate.
+          </p>
+          <p>
+            Aggiornamenti, fix e nuove feature vengono distribuiti regolarmente senza interrompere il servizio.
+Il progetto continua ad evolversi grazie ai feedback dei server che utilizzano Nimbus ogni giorno.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Link utili</h2>
+        <p>Alcuni collegamenti rapidi legati al progetto Nimbus:</p>
+        <div class="links-list">
+          <a href="https://discord.com/oauth2/authorize?client_id=1434207650513420338&permissions=8&integration_type=0&scope=applications.commands+bot" target="_blank" rel="noopener" class="link-pill">
+            <span class="icon">☁️</span> <span>Invita Nimbus sul tuo server</span>
+          </a>
+          <a href="https://discord.gg/SKg96wJA9b" target="_blank" rel="noopener" class="link-pill">
+            <span class="icon">💬</span> <span>Server di supporto</span>
+          </a>
+          <a href="https://discord.com/channels/1437894501585784934/1438183875841884282" class="link-pill">
+            <span class="icon">📜</span> <span>Termini & Condizioni</span>
+          </a>
+          <a href="https://discord.com/channels/1437894501585784934/1438183952782463228" class="link-pill">
+            <span class="icon">🔒</span> <span>Privacy Policy</span>
+          </a>
+        </div>
+      </section>
+
+      <section id="terms">
+        <h2>Termini d’uso (Sintesi)</h2>
+        <p>
+          Nimbus è un bot Discord fornito “così com’è”, senza garanzie di disponibilità continua. Non utilizzare il bot
+          per attività illegali, abusive o in violazione delle policy di Discord. L’uso di Nimbus implica l’accettazione
+          dei Termini di Servizio e delle Linee Guida della Community di Discord.
+        </p>
+      </section>
+
+      <section id="privacy">
+        <h2>Privacy (Sintesi)</h2>
+        <p>
+          Nimbus raccoglie solo i dati tecnici necessari al funzionamento (ID server, utenti, configurazioni). Nessun contenuto
+          dei messaggi viene memorizzato. I dati non vengono venduti o condivisi con terze parti e possono essere eliminati
+          rimuovendo il bot o contattando il team tramite il server di supporto.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <div>© 2025 Nimbus. Progetto indipendente, non affiliato a Discord Inc.</div>
+      <div class="footer-links">
+        <a href="https://discord.gg/SKg96wJA9b" target="_blank" rel="noopener">Supporto</a>
+        <a href="https://discord.com/channels/1437894501585784934/1438183875841884282">Termini & Condizioni</a>
+        <a href="https://discord.com/channels/1437894501585784934/1438183952782463228">Privacy Policy</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
